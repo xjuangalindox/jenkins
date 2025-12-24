@@ -1,0 +1,36 @@
+# version: "3.8"
+
+services:
+  docker:
+    image: docker:dind
+    container_name: docker
+    privileged: true # Necesario para que Docker funcione
+    environment:
+      DOCKER_TLS_CERTDIR: "" # Desactiva TLS (conexión simple)
+    volumes:
+      - docker_data:/var/lib/docker
+
+  jenkins:
+    container_name: jenkins
+    build: . # 👈 USA EL DOCKERFILE
+    ports:
+      - "8080:8080" # UI Jenkins
+      - "5000:5000"
+    environment:
+      DOCKER_HOST: tcp://docker:2375 # Jenkins se conecta al Docker engine
+    restart: always
+    volumes:
+      - jenkins_data:/var/jenkins_home
+    depends_on:
+      - docker # Espera a que Docker esté listo
+
+volumes:
+  jenkins_data:
+    external: true
+    name: jenkins_data
+    
+  docker_data:
+    external: true
+    name: docker_data
+
+# name: ${JENKINS_VOLUME_NAME}
