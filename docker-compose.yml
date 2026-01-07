@@ -16,8 +16,10 @@ services:
     ports:
       - "8080:8080" # UI Jenkins
       - "5000:5000"
-    # environment:
+    environment:
+      - JENKINS_OPTS=--prefix=/jenkins # Raíz ya no es /, ahora es /jenkins
       # DOCKER_HOST: tcp://docker:2375 # Jenkins se conecta al Docker engine
+
     restart: always
     volumes:
       - jenkins_data:/var/jenkins_home
